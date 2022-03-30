@@ -1,4 +1,4 @@
-# r/place2 Networked Bot
+# HYDRA (r/place2 Networked Bot)
 
 ![Logo](/download.jpg)
 
