@@ -1,6 +1,6 @@
 # HYDRA (r/place 2 Networked Bot)
 
-![Logo](/download.jpg)
+[![Real Life Hydra](/download.jpg)](https://en.wikipedia.org/wiki/Hydra_(genus))
 
 Server/client that communicate to make a crowdscourced Bot!
 
