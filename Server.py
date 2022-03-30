@@ -34,9 +34,10 @@ class Logic:
 			self.activePixels.remove(pixel)
 			self.inactivePixels.append(pixel)
 
-	def getFreePixel(self):
+	def getFreePixel(self, ontime=False):
 		Pixel = random.choice(self.inactivePixels) 
-		self.switchPixelState(Pixel)
+		if not onetime:
+			self.switchPixelState(Pixel)
 		return Pixel
 
 	def updateTitle(self):
@@ -91,6 +92,14 @@ class Server:
 def stampIt(message):
 	timestamp = timestamp = time.strftime("%H:%M:%S")
 	return f"@{timestamp} [HYDRA] {message}"
+
+def sendMessage(conn, msg):
+	message = msg.encode("utf-8")
+	msg_length = len(message)
+	send_length = str(msg_length).encode("utf-8")
+	send_length += b' ' * (HEADER - len(send_length))
+	conn.send(send_length)
+	conn.send(message)
 
 if __name__ == '__main__':
 	urMom = Server()
