@@ -1,16 +1,22 @@
-#This is the Client Side of the chat program.
-#This program will send a message to the server.
+import socket
 import time
 
-def test_message():
-	import socket
-	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	host = socket.gethostname()
-	port = 9999
-	s.connect((host, port))
-	message = s.recv(1024)
-	print(message.decode('ascii'))
-	time.sleep(10)
+HEADER = 64
+PORT = 5050
+SERVER = "192.168.0.211"
+ADDR = (SERVER, PORT)
+
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.connect(ADDR)
+
+def send(msg):
+    message = msg.encode("utf-8")
+    msg_length = len(message)
+    send_length = str(msg_length).encode("utf-8")
+    send_length += b' ' * (HEADER - len(send_length))
+    client.send(send_length)
+    client.send(message)
 
 if __name__ == '__main__':
-	test_message()
+	time.sleep(10)
+	send("disconnect")
