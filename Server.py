@@ -34,7 +34,7 @@ class Logic:
 			self.activePixels.remove(pixel)
 			self.inactivePixels.append(pixel)
 
-	def getFreePixel(self, ontime=False):
+	def getFreePixel(self, onetime=False):
 		Pixel = random.choice(self.inactivePixels) 
 		if not onetime:
 			self.switchPixelState(Pixel)
@@ -70,15 +70,19 @@ class Server:
 		print(stampIt(f"New Anonymous User from {locData['country_name']} connected."))
 		Pixel = self.Logic.getFreePixel() #dont know what this returns
 		connected = True
-		conn.send(f"#dont know what goes here exactly".encode("utf-8"))
+		self.sendMessage(conn, f"#dont know what goes here exactly")
 		while connected:
 			msg_length = conn.recv(self.HEADER).decode("utf-8")
 			if msg_length:
 				msg_length = int(msg_length)
 				msg = conn.recv(msg_length).decode("utf-8")
 				#Handle Client disconnecting
+				print(stampIt(msg))
 				if msg == "disconnect":
-					connected = False			
+					connected = False
+				elif msg == "otp":
+					Pixel = self.Logic.getFreePixel(onetime=True)			
+					self.sendMessage(conn, f"#dont know what goes here exactly")
 				#implement following messages:
 				#-want pixel
 				#-has send pixel
@@ -88,18 +92,19 @@ class Server:
 		Logic.switchPixelState(Pixel)
 		print(stampIt(f"Anonymous User from {location} disconnected."))
 
+	def sendMessage(self, conn, msg):
+		message = msg.encode("utf-8")
+		msg_length = len(message)
+		send_length = str(msg_length).encode("utf-8")
+		send_length += b' ' * (self.HEADER - len(send_length))
+		conn.send(send_length)
+		conn.send(message)
+
 #Helper Methods
 def stampIt(message):
 	timestamp = timestamp = time.strftime("%H:%M:%S")
 	return f"@{timestamp} [HYDRA] {message}"
 
-def sendMessage(conn, msg):
-	message = msg.encode("utf-8")
-	msg_length = len(message)
-	send_length = str(msg_length).encode("utf-8")
-	send_length += b' ' * (HEADER - len(send_length))
-	conn.send(send_length)
-	conn.send(message)
 
 if __name__ == '__main__':
 	urMom = Server()
