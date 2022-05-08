@@ -1,4 +1,4 @@
-import socket 
+import socket
 import threading
 import requests
 import time
@@ -16,7 +16,7 @@ class Logic:
 		self.loadImage()
 		self.updateTitleThread = threading.Thread(target=self.updateTitle)
 		self.updateTitleThread.start()
-	
+
 	def loadImage(self):
 		self.image = Image.open("download.jpg")
 		self.pixels = self.image.load()
@@ -35,7 +35,7 @@ class Logic:
 			self.inactivePixels.append(pixel)
 
 	def getFreePixel(self, onetime=False):
-		Pixel = random.choice(self.inactivePixels) 
+		Pixel = random.choice(self.inactivePixels)
 		if not onetime:
 			self.switchPixelState(Pixel)
 		return Pixel
@@ -66,7 +66,7 @@ class Server:
 			thread.start()
 
 	def handle_client(self, conn, addr):
-		locData = requests.get(f"https://geolocation-db.com/json/{conn}&position=true").json()    
+		locData = requests.get(f"https://geolocation-db.com/json/{conn}&position=true").json()
 		print(stampIt(f"New Anonymous User from {locData['country_name']} connected."))
 		Pixel = self.Logic.getFreePixel() #dont know what this returns
 		connected = True
@@ -81,16 +81,16 @@ class Server:
 				if msg == "disconnect":
 					connected = False
 				elif msg == "otp":
-					Pixel = self.Logic.getFreePixel(onetime=True)			
+					Pixel = self.Logic.getFreePixel(onetime=True)
 					self.sendMessage(conn, f"#dont know what goes here exactly")
 				#implement following messages:
 				#-want pixel
 				#-has send pixel
 				#how to send back:
-				#conn.send("Disconnecting".encode("utf-8"))	
+				#conn.send("Disconnecting".encode("utf-8"))
 		conn.close()
 		Logic.switchPixelState(Pixel)
-		print(stampIt(f"Anonymous User from {location} disconnected."))
+		print(stampIt(f"Anonymous User from {locData} disconnected."))
 
 	def sendMessage(self, conn, msg):
 		message = msg.encode("utf-8")

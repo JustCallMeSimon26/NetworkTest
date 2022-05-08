@@ -1,5 +1,6 @@
 import socket
 import time
+
 class Client:
 	def __init__(self):
 		self.HEADER = 64
@@ -41,17 +42,17 @@ class Client:
 		#smth smth update stats tracker for user
 		#cant even theorise about this yet lol
 
-	def requestOneTimePixel():
+	def requestOneTimePixel(self):
 		self.sendMessage("otp")
 
 	def sendMessage(self, msg):
 		message = msg.encode("utf-8")
 		msg_length = len(message)
 		send_length = str(msg_length).encode("utf-8")
-		send_length += b' ' * (HEADER - len(send_length))
-		client.send(send_length)
-		client.send(message)
+		send_length += b' ' * (self.HEADER - len(send_length))
+		self.client.send(send_length)
+		self.client.send(message)
 
 if __name__ == '__main__':
 	UrDad = Client()
-	Cliet.sendMessage("disconnect")
+	UrDad.sendMessage("disconnect")
